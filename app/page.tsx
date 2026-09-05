@@ -12,7 +12,17 @@ export default function Home() {
   return (
     <main>
       <Header />
-      <section className="hero">
+      <section className="arrival-hero" aria-labelledby="arrival-title">
+        <div className="arrival-grid" />
+        <div className="arrival-system" aria-hidden="true"><i /><i /><i /><span>PNT</span></div>
+        <div className="arrival-topline"><span>Positioning · Navigation · Timing</span><span>25.0330° N · 121.5654° E</span></div>
+        <div className="arrival-copy">
+          <p>PNT Research Group</p>
+          <h1 id="arrival-title">Navigate the unknown.<br /><em>Never stop moving.</em></h1>
+        </div>
+        <a className="arrival-explore" href="#home-main"><span>Explore</span><i>↓</i></a>
+      </section>
+      <section className="hero" id="home-main">
         <div className="hero-copy">
           <p className="eyebrow"><span /> Positioning · Navigation · Timing</p>
           <h1>Certainty for a<br /><em>world in motion.</em></h1>

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import Motion from './motion';
+import SiteIntro from './site-intro';
 
 const siteUrl = process.env.SITE_URL ?? 'https://pntl-nsslglobal.chen-brandon1213.chatgpt.site';
 
@@ -25,5 +26,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><body>{children}<Motion /></body></html>;
+  return <html lang="en"><body><SiteIntro />{children}<Motion /></body></html>;
 }

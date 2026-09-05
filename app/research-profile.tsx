@@ -1,10 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 type ProfileId = 'brandon' | 'naveed';
-type TabId = 'overview' | 'fingerprint' | 'network' | 'outputs';
 type Profile = {
   id: ProfileId;
   initials: string;
@@ -17,7 +16,7 @@ type Profile = {
 
 const profiles: Record<ProfileId, Profile> = {
   brandon: {
-    id: 'brandon' as ProfileId,
+    id: 'brandon',
     initials: 'BC',
     name: 'Brandon Chen',
     role: 'Co-founder · Systems & research',
@@ -31,7 +30,7 @@ const profiles: Record<ProfileId, Profile> = {
     ],
   },
   naveed: {
-    id: 'naveed' as ProfileId,
+    id: 'naveed',
     initials: 'NA',
     name: 'Naveed Ahmed',
     role: 'Co-founder · Strategy & applications',
@@ -46,117 +45,116 @@ const profiles: Record<ProfileId, Profile> = {
   },
 };
 
-const tabs: { id: TabId; label: string }[] = [
-  { id: 'overview', label: 'Overview' },
-  { id: 'fingerprint', label: 'Fingerprint' },
-  { id: 'network', label: 'Network' },
-  { id: 'outputs', label: 'Research output' },
-];
-
 export default function ResearchProfile() {
-  const [selected, setSelected] = useState<ProfileId>('brandon');
-  const [activeTab, setActiveTab] = useState<TabId>('overview');
-  const profile = profiles[selected];
+  const [selected, setSelected] = useState<ProfileId | null>(null);
 
   useEffect(() => {
-    const person = new URLSearchParams(window.location.search).get('person');
-    if (person !== 'brandon' && person !== 'naveed') return;
-    const timer = window.setTimeout(() => setSelected(person), 0);
-    return () => window.clearTimeout(timer);
+    const readLocation = () => {
+      const person = new URLSearchParams(window.location.search).get('person');
+      setSelected(person === 'brandon' || person === 'naveed' ? person : null);
+    };
+    const timer = window.setTimeout(readLocation, 0);
+    window.addEventListener('popstate', readLocation);
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener('popstate', readLocation);
+    };
   }, []);
 
   function selectProfile(id: ProfileId) {
     setSelected(id);
-    setActiveTab('overview');
-    const url = new URL(window.location.href);
-    url.searchParams.set('person', id);
-    window.history.replaceState({}, '', url);
+    const nextUrl = new URL(window.location.href);
+    nextUrl.searchParams.set('person', id);
+    window.history.pushState({}, '', nextUrl);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  function showDirectory() {
+    setSelected(null);
+    const nextUrl = new URL(window.location.href);
+    nextUrl.searchParams.delete('person');
+    window.history.pushState({}, '', nextUrl);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  if (!selected) return <ProfileDirectory onSelect={selectProfile} />;
+
+  const profile = profiles[selected];
+  const partner = profile.id === 'brandon' ? profiles.naveed : profiles.brandon;
+
   return (
-    <section className="profile-portal">
-      <div className="profile-portal-bar">
-        <span>PNTL research portal</span>
-        <p>People · expertise · output</p>
+    <section className="pure-profile-page">
+      <header className="pure-directory-bar">
+        <div><span>Research profiles</span><strong>2 researchers</strong></div>
+        <nav aria-label="Research profile actions"><button onClick={showDirectory} type="button">Return to profiles</button><Link href="/people">View team</Link></nav>
+      </header>
+
+      <div className="pure-profile-switcher" role="tablist" aria-label="Researcher profiles">
+        {Object.values(profiles).map((person) => <button aria-selected={profile.id === person.id} className={profile.id === person.id ? 'is-active' : ''} key={person.id} onClick={() => selectProfile(person.id)} role="tab" type="button"><ProfilePortrait person={person} compact /><span>{person.name}<small>{person.role}</small></span></button>)}
       </div>
 
-      <div className="profile-selector" aria-label="Choose a research profile">
-        <span>Research profiles</span>
-        {(Object.values(profiles)).map((person) => (
-          <button
-            className={selected === person.id ? 'is-selected' : ''}
-            key={person.id}
-            onClick={() => selectProfile(person.id)}
-            type="button"
-          >
-            <b>{person.initials}</b>
-            <span>{person.name}<small>{person.role}</small></span>
-          </button>
-        ))}
-      </div>
-
-      <div className="profile-shell">
-        <header className="profile-hero">
-          <div className={`profile-photo profile-photo-${profile.id}`} aria-hidden="true">
-            <span>{profile.initials}</span><i /><i />
-          </div>
-          <div className="profile-identity">
-            <p>{profile.role}</p>
-            <h1>{profile.name}</h1>
-            <Link href="/people">PNTL · NSSLGlobal</Link>
-            <p className="profile-summary">{profile.summary}</p>
-            <div className="profile-tags">{profile.interests.map((interest) => <span key={interest}>{interest}</span>)}</div>
-          </div>
-          <dl className="profile-metrics">
-            <div><dt>Research themes</dt><dd>04</dd></div>
-            <div><dt>Active directions</dt><dd>03</dd></div>
-            <div><dt>Public outputs</dt><dd>—</dd></div>
-            <small>Public record in preparation</small>
-          </dl>
-        </header>
-
-        <nav className="profile-tabs" aria-label={`${profile.name} profile sections`} role="tablist">
-          {tabs.map((tab) => (
-            <button
-              aria-controls={`panel-${tab.id}`}
-              aria-selected={activeTab === tab.id}
-              className={activeTab === tab.id ? 'is-active' : ''}
-              id={`tab-${tab.id}`}
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              role="tab"
-              type="button"
-            >{tab.label}</button>
-          ))}
-        </nav>
-
-        <div className="profile-panel" id={`panel-${activeTab}`} role="tabpanel" aria-labelledby={`tab-${activeTab}`}>
-          {activeTab === 'overview' && <Overview profile={profile} />}
-          {activeTab === 'fingerprint' && <Fingerprint profile={profile} />}
-          {activeTab === 'network' && <Network profile={profile} onSelect={selectProfile} />}
-          {activeTab === 'outputs' && <Outputs profile={profile} />}
+      <section className="pure-profile-hero">
+        <ProfilePortrait person={profile} />
+        <div className="pure-profile-identity">
+          <h1>{profile.name}</h1>
+          <ul><li>{profile.role}</li><li>Positioning, Navigation and Timing Laboratory</li><li>NSSLGlobal</li></ul>
+          <div className="pure-profile-contact"><span><b>Group</b>PNT Research Group</span><Link href="/contact"><b>Contact</b>Start a research conversation</Link></div>
         </div>
-      </div>
+        <aside className="pure-profile-metrics">
+          <div><strong>04</strong><span>Research areas</span><small>Curated from profile interests</small></div>
+          <div><strong>00</strong><span>Public outputs</span><small>Record in preparation</small></div>
+          <div className="pure-profile-record"><span>Public research record</span><b>Building openly</b></div>
+        </aside>
+      </section>
+
+      <nav className="pure-profile-nav" aria-label={`${profile.name} profile sections`}>
+        {[
+          ['profile-overview', 'Overview'],
+          ['profile-fingerprint', 'Fingerprint'],
+          ['profile-similar', 'Similar profiles'],
+          ['profile-network', 'Network'],
+          ['profile-outputs', 'Research output'],
+        ].map(([id, label]) => <button key={id} onClick={() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })} type="button">{label}</button>)}
+      </nav>
+
+      <section className="pure-profile-section" id="profile-overview">
+        <SectionHeading icon="person" title="Personal profile" />
+        <div className="pure-personal-grid"><article><h3>Biography</h3><p>{profile.summary}</p><p>PNTL connects physical models, algorithms, field evidence, and deployment constraints so navigation systems can show not only where they are, but how much that answer deserves to be trusted.</p></article><aside><h3>Research interests</h3><div className="pure-keywords">{profile.interests.map((interest) => <span key={interest}>{interest}</span>)}</div></aside></div>
+      </section>
+
+      <section className="pure-profile-section pure-fingerprint" id="profile-fingerprint">
+        <SectionHeading icon="fingerprint" title="Fingerprint" description={`Dive into the research topics where ${profile.name} is active. These qualitative labels come from the profile's stated interests; they are not citation-derived metrics.`} aside={<div className="pure-similar-badge"><strong>01</strong><span>Similar profile</span></div>} />
+        <div className="pure-fingerprint-list">{profile.themes.map(([title, level, description], index) => <article key={title}><div className={`pure-topic-ring topic-${index + 1}`}><i /><span>{index + 1}</span></div><div><small>{level} focus</small><h3>{title}</h3><p>{description}</p></div></article>)}</div>
+      </section>
+
+      <section className="pure-profile-section" id="profile-similar">
+        <SectionHeading icon="similar" title="Similar profiles" description="Researchers with closely related interests, methods, and program responsibilities." />
+        <button className="pure-similar-card" onClick={() => selectProfile(partner.id)} type="button"><ProfilePortrait person={partner} compact /><div><small>Founding collaborator</small><h3>{partner.name}</h3><p>{partner.role}</p><span>{partner.interests.slice(0, 3).join(' · ')}</span></div><b>→</b></button>
+      </section>
+
+      <section className="pure-profile-section" id="profile-network">
+        <SectionHeading icon="network" title="Research network and connected programs" description="The public map shows PNTL's current working structure. Named external collaborators will be added when joint work becomes public." />
+        <div className="pure-network-map"><span className="network-connector connector-one" /><span className="network-connector connector-two" /><span className="network-connector connector-three" /><div className="pure-network-node node-current"><b>{profile.initials}</b><span>{profile.name}</span></div><div className="pure-network-node node-center"><b>PNTL</b><span>NSSLGlobal</span></div><button className="pure-network-node node-collaborator" onClick={() => selectProfile(partner.id)} type="button"><b>{partner.initials}</b><span>{partner.name}</span></button><div className="pure-network-node node-program"><b>FIELD</b><span>Research programs</span></div></div>
+      </section>
+
+      <section className="pure-profile-section" id="profile-outputs">
+        <SectionHeading icon="output" title="Research output" description="Papers, technical notes, datasets, and code will appear here as the PNTL public record is released." aside={<span className="pure-section-total">0 total outputs</span>} />
+        <div className="pure-output-empty"><span>Record in preparation</span><h3>No unverified publications are shown.</h3><p>The first public entries will include their source, status, associated code or data, and a plain-language summary.</p><Link href="/publications">View publication index →</Link></div>
+      </section>
+
+      <footer className="pure-profile-note">This profile is a curated PNTL record. Research topics are qualitative and publication metrics remain blank until verified outputs are released.</footer>
     </section>
   );
 }
 
-function Overview({ profile }: { profile: Profile }) {
-  return <div className="profile-overview">
-    <article><p className="profile-kicker">About</p><h2>Research built around dependable decisions.</h2><p>{profile.summary}</p><p>PNTL connects physical models, algorithms, field evidence, and deployment constraints so navigation systems can show not only where they are, but how much that answer deserves to be trusted.</p></article>
-    <aside><p className="profile-kicker">Current focus</p>{profile.interests.map((item, index) => <div key={item}><span>0{index + 1}</span><b>{item}</b></div>)}</aside>
-  </div>;
+function ProfileDirectory({ onSelect }: { onSelect: (id: ProfileId) => void }) {
+  return <section className="profile-directory-page"><header className="profile-directory-hero"><p>Research profiles</p><h1>Explore researcher profiles.</h1><span>Choose a researcher to view their complete record, research activity, network, and curated fingerprint.</span></header><div className="profile-card-directory" aria-label="Researcher profile directory">{Object.values(profiles).map((person, index) => <button className={`reference-person-card ${index === 1 ? 'is-alt' : ''}`} key={person.id} onClick={() => onSelect(person.id)} type="button"><ProfilePortrait person={person} /><span className="reference-person-body"><small>Research profile</small><h2>{person.name}</h2><p>{person.role}</p></span><span className="reference-person-action">View full profile</span></button>)}</div><div className="profile-directory-foot"><p>Profiles connect people, expertise, collaboration, and public output in one research record.</p><Link href="/people">Meet the team →</Link></div></section>;
 }
 
-function Fingerprint({ profile }: { profile: Profile }) {
-  return <div><div className="panel-heading"><p className="profile-kicker">Research fingerprint</p><h2>Concepts that define the work.</h2><p>A qualitative map of current PNTL focus—not a citation-derived or automated bibliometric score.</p></div><div className="fingerprint-grid">{profile.themes.map(([title, level, description], index) => <article key={title}><div className={`fingerprint-orbit orbit-weight-${index + 1}`}><span>{index + 1}</span><i /></div><p>{level} focus</p><h3>{title}</h3><div>{description}</div></article>)}</div></div>;
+function ProfilePortrait({ person, compact = false }: { person: Profile; compact?: boolean }) {
+  return <span className={`reference-portrait portrait-${person.id} ${compact ? 'is-compact' : ''}`} aria-hidden="true"><i /><i /><b>{person.initials}</b><small>PNTL</small></span>;
 }
 
-function Network({ profile, onSelect }: { profile: Profile; onSelect: (id: ProfileId) => void }) {
-  const partner = profile.id === 'brandon' ? profiles.naveed : profiles.brandon;
-  return <div><div className="panel-heading"><p className="profile-kicker">Collaboration network</p><h2>One laboratory, connected outward.</h2><p>This map shows the working structure of the lab. Named external collaborators will be added as joint work becomes public.</p></div><div className="network-map"><span className="network-line line-one" /><span className="network-line line-two" /><span className="network-line line-three" /><div className="network-node node-person"><b>{profile.initials}</b><span>{profile.name}</span></div><div className="network-node node-lab"><b>PNTL</b><span>NSSLGlobal</span></div><button className="network-node node-partner" onClick={() => onSelect(partner.id)} type="button"><b>{partner.initials}</b><span>{partner.name}</span></button><div className="network-node node-field"><b>FIELD</b><span>Research partners</span></div></div></div>;
-}
-
-function Outputs({ profile }: { profile: Profile }) {
-  return <div className="outputs-empty"><span>Research output</span><h2>{profile.name}&apos;s public record is being assembled.</h2><p>Future entries will link papers, technical notes, datasets, code, and plain-language summaries. No placeholder citations or unverified metrics are shown.</p><Link className="arrow-link" href="/publications">Visit the publication index <span>↗</span></Link></div>;
+function SectionHeading({ icon, title, description, aside }: { icon: string; title: string; description?: string; aside?: React.ReactNode }) {
+  return <header className="pure-section-heading"><div><h2><i className={`pure-section-icon ${icon}`} aria-hidden="true" />{title}</h2>{description && <p>{description}</p>}</div>{aside}</header>;
 }
