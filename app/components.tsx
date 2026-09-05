@@ -4,12 +4,14 @@ import Image from 'next/image';
 export const assetPath = (path: string) => `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}${path}`;
 
 const nav = [
+  { label: 'About', href: '/about', key: 'about' },
   { label: 'Research', href: '/research', key: 'research' },
   { label: 'Profiles', href: '/research-profile', key: 'research-profile' },
   { label: 'Projects', href: '/projects', key: 'projects' },
   { label: 'Team', href: '/people', key: 'people' },
   { label: 'Publications', href: '/publications', key: 'publications' },
   { label: 'Open lab', href: '/resources', key: 'resources' },
+  { label: 'Join', href: '/recruitment', key: 'recruitment' },
 ];
 
 export function Header({ current = 'home' }: { current?: string }) {
@@ -17,7 +19,7 @@ export function Header({ current = 'home' }: { current?: string }) {
     <header className="site-header">
       <Link className="brand" href="/" aria-label="PNTL home">
         <Image src={assetPath('/pntl-emblem-stacked.svg')} alt="" width={38} height={38} />
-        <span><b>PNTL</b><small>NSSLGlobal</small></span>
+        <span><b>PNTL</b><small>Independent research group</small></span>
       </Link>
       <nav aria-label="Primary navigation">
         {nav.map((item) => <Link className={current === item.key ? 'is-active' : ''} href={item.href} key={item.href}>{item.label}</Link>)}
@@ -40,8 +42,8 @@ export function Footer() {
       </div>
       <div className="footer-grid">
         <div><span>Explore</span><Link href="/research">Research</Link><Link href="/research-profile">Research profiles</Link><Link href="/projects">Projects</Link><Link href="/publications">Publications</Link></div>
-        <div><span>Lab</span><Link href="/people">Team</Link><Link href="/resources">Open resources</Link><Link href="/contact">Connect</Link></div>
-        <div className="footer-note"><span>NSSLGlobal · PNTL</span><p>Founded by Brandon Chen and Naveed Ahmed.</p></div>
+        <div><span>Lab</span><Link href="/about">About</Link><Link href="/people">Team</Link><Link href="/resources">Open resources</Link><Link href="/recruitment">Recruitment</Link><Link href="/contact">Connect</Link></div>
+        <div className="footer-note"><span>Independent · PNTL</span><p>Founded by Brandon Chen and Naveed Ahmed.</p></div>
       </div>
       <div className="footer-base"><span>© 2026 PNTL</span><span>Positioning · Navigation · Timing</span></div>
     </footer>

@@ -9,6 +9,7 @@ type Profile = {
   initials: string;
   name: string;
   role: string;
+  affiliation: string;
   summary: string;
   interests: string[];
   themes: string[][];
@@ -20,6 +21,7 @@ const profiles: Record<ProfileId, Profile> = {
     initials: 'BC',
     name: 'Brandon Chen',
     role: 'Co-founder · Systems & research',
+    affiliation: 'Independent researcher · PNTL',
     summary: 'Works across the architecture of positioning systems—from signal behavior and estimation to how evidence becomes a dependable product decision.',
     interests: ['Resilient GNSS', 'Sensor fusion', 'Integrity monitoring', 'Urban positioning'],
     themes: [
@@ -34,6 +36,7 @@ const profiles: Record<ProfileId, Profile> = {
     initials: 'NA',
     name: 'Naveed Ahmed',
     role: 'Co-founder · Strategy & applications',
+    affiliation: 'Works at NSSLGlobal',
     summary: 'Connects research direction to real operational needs, shaping programs around adoption, deployment, and measurable outcomes.',
     interests: ['Cooperative positioning', 'Field validation', 'Systems strategy', 'Autonomous deployment'],
     themes: [
@@ -47,6 +50,8 @@ const profiles: Record<ProfileId, Profile> = {
 
 export default function ResearchProfile() {
   const [selected, setSelected] = useState<ProfileId | null>(null);
+  const [activeTopic, setActiveTopic] = useState<string | null>(null);
+  const [activeInterest, setActiveInterest] = useState<string | null>(null);
 
   useEffect(() => {
     const readLocation = () => {
@@ -63,6 +68,8 @@ export default function ResearchProfile() {
 
   function selectProfile(id: ProfileId) {
     setSelected(id);
+    setActiveTopic(null);
+    setActiveInterest(null);
     const nextUrl = new URL(window.location.href);
     nextUrl.searchParams.set('person', id);
     window.history.pushState({}, '', nextUrl);
@@ -97,12 +104,12 @@ export default function ResearchProfile() {
         <ProfilePortrait person={profile} />
         <div className="pure-profile-identity">
           <h1>{profile.name}</h1>
-          <ul><li>{profile.role}</li><li>Positioning, Navigation and Timing Laboratory</li><li>NSSLGlobal</li></ul>
+          <ul><li>{profile.role}</li><li>Positioning, Navigation and Timing Laboratory</li><li>{profile.affiliation}</li></ul>
           <div className="pure-profile-contact"><span><b>Group</b>PNT Research Group</span><Link href="/contact"><b>Contact</b>Start a research conversation</Link></div>
         </div>
         <aside className="pure-profile-metrics">
-          <div><strong>04</strong><span>Research areas</span><small>Curated from profile interests</small></div>
-          <div><strong>00</strong><span>Public outputs</span><small>Record in preparation</small></div>
+          <button onClick={() => document.getElementById('profile-fingerprint')?.scrollIntoView({ behavior: 'smooth' })} type="button"><strong>04</strong><span>Research areas</span><small>Open the fingerprint</small></button>
+          <button onClick={() => document.getElementById('profile-outputs')?.scrollIntoView({ behavior: 'smooth' })} type="button"><strong>00</strong><span>Public outputs</span><small>Open the record</small></button>
           <div className="pure-profile-record"><span>Public research record</span><b>Building openly</b></div>
         </aside>
       </section>
@@ -119,12 +126,12 @@ export default function ResearchProfile() {
 
       <section className="pure-profile-section" id="profile-overview">
         <SectionHeading icon="person" title="Personal profile" />
-        <div className="pure-personal-grid"><article><h3>Biography</h3><p>{profile.summary}</p><p>PNTL connects physical models, algorithms, field evidence, and deployment constraints so navigation systems can show not only where they are, but how much that answer deserves to be trusted.</p></article><aside><h3>Research interests</h3><div className="pure-keywords">{profile.interests.map((interest) => <span key={interest}>{interest}</span>)}</div></aside></div>
+        <div className="pure-personal-grid"><article><h3>Biography</h3><p>{profile.summary}</p><p>PNTL connects physical models, algorithms, field evidence, and deployment constraints so navigation systems can show not only where they are, but how much that answer deserves to be trusted.</p></article><aside><h3>Research interests</h3><div className="pure-keywords">{profile.interests.map((interest) => <button aria-pressed={activeInterest === interest} className={activeInterest === interest ? 'is-active' : ''} key={interest} onClick={() => setActiveInterest(activeInterest === interest ? null : interest)} type="button">{interest}</button>)}</div>{activeInterest && <p className="pure-interest-note"><b>{activeInterest}</b> is part of {profile.name}&apos;s current qualitative research fingerprint.</p>}</aside></div>
       </section>
 
       <section className="pure-profile-section pure-fingerprint" id="profile-fingerprint">
         <SectionHeading icon="fingerprint" title="Fingerprint" description={`Dive into the research topics where ${profile.name} is active. These qualitative labels come from the profile's stated interests; they are not citation-derived metrics.`} aside={<div className="pure-similar-badge"><strong>01</strong><span>Similar profile</span></div>} />
-        <div className="pure-fingerprint-list">{profile.themes.map(([title, level, description], index) => <article key={title}><div className={`pure-topic-ring topic-${index + 1}`}><i /><span>{index + 1}</span></div><div><small>{level} focus</small><h3>{title}</h3><p>{description}</p></div></article>)}</div>
+        <div className="pure-fingerprint-list">{profile.themes.map(([title, level, description], index) => <button aria-expanded={activeTopic === title} className={`pure-topic-card ${activeTopic === title ? 'is-open' : ''}`} key={title} onClick={() => setActiveTopic(activeTopic === title ? null : title)} type="button"><div className={`pure-topic-ring topic-${index + 1}`}><i /><span>{index + 1}</span></div><div><small>{level} focus</small><h3>{title}</h3><p>{description}</p><span className="pure-topic-more">{activeTopic === title ? 'Close focus note' : 'Explore focus'} <i>{activeTopic === title ? '−' : '+'}</i></span>{activeTopic === title && <em>This theme connects to field evidence, explicit uncertainty, and reproducible evaluation across the PNTL research program.</em>}</div></button>)}</div>
       </section>
 
       <section className="pure-profile-section" id="profile-similar">
@@ -134,7 +141,7 @@ export default function ResearchProfile() {
 
       <section className="pure-profile-section" id="profile-network">
         <SectionHeading icon="network" title="Research network and connected programs" description="The public map shows PNTL's current working structure. Named external collaborators will be added when joint work becomes public." />
-        <div className="pure-network-map"><span className="network-connector connector-one" /><span className="network-connector connector-two" /><span className="network-connector connector-three" /><div className="pure-network-node node-current"><b>{profile.initials}</b><span>{profile.name}</span></div><div className="pure-network-node node-center"><b>PNTL</b><span>NSSLGlobal</span></div><button className="pure-network-node node-collaborator" onClick={() => selectProfile(partner.id)} type="button"><b>{partner.initials}</b><span>{partner.name}</span></button><div className="pure-network-node node-program"><b>FIELD</b><span>Research programs</span></div></div>
+        <div className="pure-network-map"><span className="network-connector connector-one" /><span className="network-connector connector-two" /><span className="network-connector connector-three" /><div className="pure-network-node node-current"><b>{profile.initials}</b><span>{profile.name}</span></div><div className="pure-network-node node-center"><b>PNTL</b><span>Independent group</span></div><button className="pure-network-node node-collaborator" onClick={() => selectProfile(partner.id)} type="button"><b>{partner.initials}</b><span>{partner.name}</span></button><div className="pure-network-node node-program"><b>{profile.id === 'naveed' ? 'NSSL' : 'FIELD'}</b><span>{profile.id === 'naveed' ? 'Naveed’s employer' : 'Research programs'}</span></div></div>
       </section>
 
       <section className="pure-profile-section" id="profile-outputs">

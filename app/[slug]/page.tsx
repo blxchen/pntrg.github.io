@@ -2,15 +2,18 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLink, Footer, Header, PageHero } from '../components';
+import RecruitmentDirectory from '../recruitment';
 import ResearchProfile from '../research-profile';
 
 const pageMeta: Record<string, { title: string; description: string }> = {
+  about: { title: 'About', description: 'Meet PNTL, an independent research group for positioning, navigation, and timing.' },
   research: { title: 'Research', description: 'PNTL research across resilient positioning, sensing, navigation, and timing.' },
   'research-profile': { title: 'Research Profiles', description: 'Explore the people, expertise, collaboration network, and public research record behind PNTL.' },
   projects: { title: 'Projects', description: 'PNTL research programs connecting theory, field experiments, and deployable navigation.' },
-  people: { title: 'People', description: 'Meet the founders and collaborators behind PNTL at NSSLGlobal.' },
+  people: { title: 'People', description: 'Meet the founders and collaborators behind the independent PNT Research Group.' },
   publications: { title: 'Publications', description: 'Research outputs and publication themes from PNTL.' },
   resources: { title: 'Open Lab', description: 'Open tools, datasets, protocols, and field notes from PNTL.' },
+  recruitment: { title: 'Recruitment', description: 'Explore research collaboration and student contribution opportunities at PNTL.' },
   contact: { title: 'Connect', description: 'Start a research, industry, or talent conversation with PNTL.' },
 };
 
@@ -29,6 +32,19 @@ const themes = [
   { n: '03', title: 'Cooperative positioning', text: 'Turn fleets and connected devices into shared navigation infrastructure without losing sight of trust.', tag: 'Network layer' },
   { n: '04', title: 'Precise timing', text: 'Study timing integrity and distribution for systems that depend on coordination down to the smallest interval.', tag: 'Time layer' },
 ];
+
+function AboutPage() {
+  const principles = [
+    ['01', 'Independent inquiry', 'Choose questions for their scientific and practical value, then make assumptions visible.'],
+    ['02', 'Field evidence', 'Test ideas where signals fail, environments interfere, and real decisions depend on the answer.'],
+    ['03', 'Open practice', 'Build a public layer of methods, tools, notes, and carefully sourced research outputs.'],
+  ];
+  return <><PageHero index="00 / About" eyebrow="About PNTL" title="An independent group for navigation under pressure." intro="PNTL is a founder-led research group exploring how positioning, navigation, and timing systems can remain useful when observations become incomplete or unreliable." />
+    <section className="about-story"><div className="about-graphic" data-reveal aria-hidden="true"><span className="about-orbit orbit-a"><i /></span><span className="about-orbit orbit-b"><i /></span><span className="about-core">PNTL<small>Independent</small></span><b>signal → state → decision</b></div><article data-reveal><p>Why the group exists</p><h2>Confidence should be engineered, not assumed.</h2><p>Navigation systems often look certain precisely when their evidence is weakest. PNTL studies the full chain—from signal behavior and sensing to state estimation, integrity, and the decision that follows.</p><p>The group was founded by Brandon Chen and Naveed Ahmed. It is not owned by or part of NSSLGlobal; Naveed works at NSSLGlobal independently of PNTL.</p><ArrowLink href="/research">Explore the research</ArrowLink></article></section>
+    <section className="about-principles"><header data-reveal><p>Operating principles</p><h2>How PNTL chooses and carries the work.</h2></header><div>{principles.map(([number,title,copy]) => <article className="about-value-card" data-reveal key={number}><span>{number}</span><i aria-hidden="true" /><h3>{title}</h3><p>{copy}</p></article>)}</div></section>
+    <section className="about-founders"><div data-reveal><p>Founding team</p><h2>Two complementary views of the same system.</h2></div><div className="about-founder-list"><Link data-reveal href="/research-profile?person=brandon"><span>BC</span><div><small>Co-founder · Independent researcher</small><h3>Brandon Chen</h3><p>Systems, signals, estimation, and research architecture.</p></div><b>Open profile ↗</b></Link><Link data-reveal href="/research-profile?person=naveed"><span>NA</span><div><small>Co-founder · Works at NSSLGlobal</small><h3>Naveed Ahmed</h3><p>Strategy, applications, field validation, and research translation.</p></div><b>Open profile ↗</b></Link></div></section>
+    <section className="about-cta"><div className="about-cta-radar" aria-hidden="true"><i /><i /><i /></div><div data-reveal><p>Build with us</p><h2>A small group can still ask a large question.</h2><ArrowLink href="/recruitment">View opportunities</ArrowLink></div></section><Footer /></>;
+}
 
 function ResearchPage() {
   return <><PageHero index="01 / Research" eyebrow="Our research" title="Trustworthy navigation, from signal to decision." intro="We study the full positioning stack: how signals behave, how sensors disagree, how uncertainty travels, and how a system should respond." />
@@ -50,8 +66,8 @@ function ProjectsPage() {
 
 function PeoplePage() {
   const people = [
-    { id: 'brandon', initials: 'BC', role: 'Co-founder · Systems & research', name: 'Brandon Chen', text: 'Works across the architecture of positioning systems—from signal behavior and estimation to how evidence becomes a dependable product decision.', interests: ['Resilient GNSS', 'Sensor fusion', 'Integrity monitoring'] },
-    { id: 'naveed', initials: 'NA', role: 'Co-founder · Strategy & applications', name: 'Naveed Ahmed', text: 'Connects research direction to real operational needs, shaping programs around adoption, deployment, and measurable outcomes.', interests: ['Cooperative positioning', 'Field validation', 'Systems strategy'] },
+    { id: 'brandon', initials: 'BC', role: 'Co-founder · Independent researcher', name: 'Brandon Chen', text: 'Works across the architecture of positioning systems—from signal behavior and estimation to how evidence becomes a dependable product decision.', interests: ['Resilient GNSS', 'Sensor fusion', 'Integrity monitoring'] },
+    { id: 'naveed', initials: 'NA', role: 'Co-founder · Strategy & applications · Works at NSSLGlobal', name: 'Naveed Ahmed', text: 'Connects research direction to real operational needs, shaping programs around adoption, deployment, and measurable outcomes.', interests: ['Cooperative positioning', 'Field validation', 'Systems strategy'] },
   ];
   return <><PageHero index="03 / Team" eyebrow="The lab" title="Small team. Wide field of view." intro="PNTL was founded by Brandon Chen and Naveed Ahmed to connect rigorous navigation research with the systems and environments that need it." />
     <section className="reference-team-section"><header data-reveal><div><span>Team directory</span><strong>02 members</strong></div><p>Meet the people shaping PNTL&apos;s research systems, field programs, and path to application.</p></header><div className="reference-team-grid">{people.map((person, index) => <Link className={`reference-person-card ${index === 1 ? 'is-alt' : ''}`} data-reveal href={`/research-profile?person=${person.id}`} key={person.id}><span className={`reference-portrait portrait-${person.id}`} aria-hidden="true"><i /><i /><b>{person.initials}</b><small>PNTL</small></span><span className="reference-person-body"><small>Team member</small><h2>{person.name}</h2><p>{person.role}</p><em>{person.interests.join(' · ')}</em></span><span className="reference-person-action">View research profile</span></Link>)}</div></section>
@@ -75,16 +91,20 @@ function ResourcesPage() {
     <section className="open-principle"><p data-reveal>“A result becomes more useful when someone else can understand how it was made.”</p><span data-reveal>PNTL open research principle</span></section><Footer /></>;
 }
 
+function RecruitmentPage() {
+  return <><PageHero index="07 / Recruitment" eyebrow="Work with PNTL" title="Find a useful problem. Build the evidence." intro="Explore clearly scoped ways to contribute to independent research in resilient positioning, navigation, sensing, and timing." /><RecruitmentDirectory /><Footer /></>;
+}
+
 function ContactPage() {
   const lanes = [['Research collaboration','Frame a joint question, experiment, or technical study.'],['Industry program','Evaluate a navigation challenge against real operating constraints.'],['Join the lab','Discuss student, research, or engineering contributions.']];
   return <><PageHero index="06 / Connect" eyebrow="Start here" title="Bring us the difficult environment." intro="Tell us what moves, what fails, what evidence you already have, and what a useful answer would change." />
-    <section className="contact-section"><div className="contact-intro" data-reveal><p>Ways to connect</p><h2>Choose the conversation that fits.</h2><p>PNTL is currently establishing its public contact channel. In the meantime, reach the founders through your existing NSSLGlobal relationship.</p></div><div className="contact-lanes">{lanes.map((l,i)=><article data-reveal key={l[0]}><span>0{i+1}</span><h3>{l[0]}</h3><p>{l[1]}</p><b>Prepare a short brief ↗</b></article>)}</div></section>
+    <section className="contact-section"><div className="contact-intro" data-reveal><p>Ways to connect</p><h2>Choose the conversation that fits.</h2><p>PNTL is establishing a dedicated public contact channel. For now, prepare a short brief describing the problem, constraints, and decision your work needs to support.</p></div><div className="contact-lanes">{lanes.map((l,i)=><article data-reveal key={l[0]}><span>0{i+1}</span><h3>{l[0]}</h3><p>{l[1]}</p><b>Prepare a short brief ↗</b></article>)}</div></section>
     <section className="contact-prompt"><div data-reveal><p>A useful first note includes</p><h2>Context. Constraint. Decision.</h2></div><ol data-reveal><li><span>01</span>Where must the system operate?</li><li><span>02</span>What makes positioning or timing difficult there?</li><li><span>03</span>What decision will the work support?</li></ol></section><Footer /></>;
 }
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   if (!pageMeta[slug]) notFound();
-  const content = slug === 'research' ? <ResearchPage /> : slug === 'research-profile' ? <ResearchProfilePage /> : slug === 'projects' ? <ProjectsPage /> : slug === 'people' ? <PeoplePage /> : slug === 'publications' ? <PublicationsPage /> : slug === 'resources' ? <ResourcesPage /> : <ContactPage />;
+  const content = slug === 'about' ? <AboutPage /> : slug === 'research' ? <ResearchPage /> : slug === 'research-profile' ? <ResearchProfilePage /> : slug === 'projects' ? <ProjectsPage /> : slug === 'people' ? <PeoplePage /> : slug === 'publications' ? <PublicationsPage /> : slug === 'resources' ? <ResourcesPage /> : slug === 'recruitment' ? <RecruitmentPage /> : <ContactPage />;
   return <main><Header current={slug} />{content}</main>;
 }

@@ -44,7 +44,7 @@ export default function Home() {
       <section className="hero-rail" aria-label="Lab summary">
         <div><span>Founded by</span><strong>Brandon Chen<br />Naveed Ahmed</strong></div>
         <div><span>Working across</span><strong>Signals → Systems<br />Theory → Field</strong></div>
-        <p>At NSSLGlobal, PNTL connects fundamental research to deployable navigation—across cities, autonomy, and environments where satellite signals alone are not enough.</p>
+        <p>PNTL is an independent research group connecting fundamental research to deployable navigation—across cities, autonomy, and environments where satellite signals alone are not enough.</p>
       </section>
 
       <div className="ticker" aria-hidden="true"><div>Resilient GNSS <i /> Multi-sensor navigation <i /> Cooperative positioning <i /> Precise timing <i /> Integrity monitoring <i /> Field validation <i /> Resilient GNSS <i /> Multi-sensor navigation <i /></div></div>
@@ -73,7 +73,7 @@ export default function Home() {
       </section>
 
       <section className="founders-strip">
-        <div data-reveal><p>Founded at NSSLGlobal</p><h2>Two founders.<br />One precise question:</h2></div>
+        <div data-reveal><p>Independent by design</p><h2>Two founders.<br />One precise question:</h2></div>
         <blockquote data-reveal>How can navigation systems remain trustworthy when the world stops being convenient?</blockquote>
         <div className="founder-names" data-reveal><span><b>BC</b>Brandon Chen</span><span><b>NA</b>Naveed Ahmed</span><ArrowLink href="/people">Meet the lab</ArrowLink></div>
       </section>

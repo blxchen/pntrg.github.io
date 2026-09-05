@@ -43,12 +43,13 @@ export default function SiteIntro() {
       }}
       type="button"
     >
-      <span className="site-intro-wordmark">PNT RESEARCH GROUP <i>· NSSLGlobal</i></span>
+      <span className="site-intro-wordmark">PNT RESEARCH GROUP <i>· INDEPENDENT</i></span>
       <span className="site-intro-lockup">
         <span className="site-intro-orbit"><i /><i /></span>
         <span className="site-intro-logo"><Image src={assetPath('/pntl-emblem-stacked.svg')} alt="" width={194} height={176} priority /></span>
         <span className="site-intro-name"><b>PNTL</b><small>Positioning, Navigation<br />and Timing Laboratory</small></span>
         <span className="site-intro-trace" />
+        <span className="site-intro-satellite" aria-hidden="true"><i /><b /><i /></span>
       </span>
       <span className="site-intro-progress"><i /></span>
       <span className="site-intro-status"><b>Establishing position</b><i>25.0330° N · 121.5654° E</i></span>

@@ -30,12 +30,47 @@ export default function Motion() {
         observer.observe(element);
       });
     };
+    const cardSelector = '.reference-person-card,.theme-card,.preview-card,.project-list article,.resource-grid article,.output-grid article,.contact-lanes article,.recruitment-card,.about-value-card,.about-founder-list a,.pure-topic-card,.pure-similar-card';
+    const cardListeners = new Map<HTMLElement, { move: (event: PointerEvent) => void; leave: () => void }>();
+    const bindDirectionalCards = () => {
+      document.querySelectorAll<HTMLElement>(cardSelector).forEach((card) => {
+        if (cardListeners.has(card)) return;
+        const move = (event: PointerEvent) => {
+          if (event.pointerType === 'touch') return;
+          const rect = card.getBoundingClientRect();
+          const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+          const y = ((event.clientY - rect.top) / rect.height) * 2 - 1;
+          card.style.setProperty('--tilt-x', `${(-y * 4).toFixed(2)}deg`);
+          card.style.setProperty('--tilt-y', `${(x * 5).toFixed(2)}deg`);
+          card.style.setProperty('--shift-x', `${(x * 5).toFixed(2)}px`);
+          card.style.setProperty('--shift-y', `${(y * 5 - 5).toFixed(2)}px`);
+          card.style.setProperty('--shine-x', `${((x + 1) * 50).toFixed(1)}%`);
+          card.style.setProperty('--shine-y', `${((y + 1) * 50).toFixed(1)}%`);
+          card.classList.add('is-pointer-card');
+        };
+        const leave = () => {
+          card.classList.remove('is-pointer-card');
+          ['--tilt-x', '--tilt-y', '--shift-x', '--shift-y', '--shine-x', '--shine-y'].forEach((property) => card.style.removeProperty(property));
+        };
+        card.addEventListener('pointermove', move);
+        card.addEventListener('pointerleave', leave);
+        cardListeners.set(card, { move, leave });
+      });
+    };
     observe(document);
-    const mutationObserver = new MutationObserver(() => observe(document));
+    bindDirectionalCards();
+    const mutationObserver = new MutationObserver(() => {
+      observe(document);
+      bindDirectionalCards();
+    });
     mutationObserver.observe(document.body, { childList: true, subtree: true });
     return () => {
       observer.disconnect();
       mutationObserver.disconnect();
+      cardListeners.forEach(({ move, leave }, card) => {
+        card.removeEventListener('pointermove', move);
+        card.removeEventListener('pointerleave', leave);
+      });
     };
   }, []);
 
