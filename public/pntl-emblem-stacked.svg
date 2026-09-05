@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="194" height="176" viewBox="-12 -4 194 176" role="img" aria-label="PNTL emblem">
+  <title>PNTL emblem — stacked letters</title>
+  <desc>The letters P, N, T and L stacked in a two by two block in indigo, crossed by a contrail rising to a red satellite.</desc>
+
+  <!-- Palette: indigo #2E3192, red #D9272E, knockout #FFFFFF -->
+  <!-- The contrail carries a white outline so it separates where it crosses the letters.
+       On a coloured or photographic background, remove the stroke and place the trail
+       path above the letter paths instead. -->
+
+  <!-- P -->
+  <path fill="#2E3192" fill-rule="evenodd" d="M0 0 L28 0 A26 26 0 0 1 28 52 L17 52 L17 72 L0 72 Z M17 16 L28 16 A9 10 0 0 1 28 36 L17 36 Z"/>
+  <!-- N -->
+  <path fill="#2E3192" d="M66 0 L83 0 L129 44 L129 0 L146 0 L146 72 L129 72 L83 28 L83 72 L66 72 Z"/>
+  <!-- T -->
+  <path fill="#2E3192" d="M0 84 L72 84 L72 101 L45 101 L45 156 L28 156 L28 101 L0 101 Z"/>
+  <!-- L -->
+  <path fill="#2E3192" d="M84 84 L101 84 L101 139 L146 139 L146 156 L84 156 Z"/>
+
+  <!-- contrail -->
+  <path fill="#2E3192" stroke="#FFFFFF" stroke-width="7" stroke-linejoin="round" d="M-4 158 C46 148 106 100 146 26 L154 32 C114 108 52 154 -1 163 Z"/>
+
+  <!-- satellite -->
+  <g fill="#D9272E" transform="rotate(-12 152 20)">
+    <rect x="130" y="15" width="18" height="10" rx="1"/>
+    <rect x="148" y="18" width="4" height="4"/>
+    <rect x="144" y="10" width="16" height="20" rx="3"/>
+    <rect x="160" y="18" width="4" height="4"/>
+    <rect x="156" y="15" width="18" height="10" rx="1"/>
+  </g>
+</svg>

@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="122" viewBox="40 30 600 122" role="img" aria-label="Positioning, Navigation and Timing Laboratory">
+  <title>PNTL — Positioning, Navigation and Timing Laboratory</title>
+  <desc>Horizontal lockup. Indigo PNTL capitals crossed by a contrail rising to a red satellite, with the laboratory name in English and Chinese to the right.</desc>
+
+  <!-- Palette: indigo #2E3192, red #D9272E, knockout #FFFFFF -->
+  <!-- The contrail carries a white outline so it separates where it crosses the letters.
+       On a coloured or photographic background, delete the stroke on .trail and move the
+       trail path above the letter paths instead. -->
+
+  <g transform="translate(11.92,11.64) scale(0.68)">
+
+    <!-- P -->
+    <path fill="#2E3192" fill-rule="evenodd" d="M60 78 L88 78 A26 26 0 0 1 88 130 L77 130 L77 150 L60 150 Z M77 94 L88 94 A9 10 0 0 1 88 114 L77 114 Z"/>
+    <!-- N -->
+    <path fill="#2E3192" d="M126 78 L143 78 L189 122 L189 78 L206 78 L206 150 L189 150 L143 106 L143 150 L126 150 Z"/>
+    <!-- T -->
+    <path fill="#2E3192" d="M216 78 L288 78 L288 95 L261 95 L261 150 L244 150 L244 95 L216 95 Z"/>
+    <!-- L -->
+    <path fill="#2E3192" d="M301 78 L318 78 L318 133 L363 133 L363 150 L301 150 Z"/>
+
+    <!-- contrail -->
+    <path fill="#2E3192" stroke="#FFFFFF" stroke-width="6" stroke-linejoin="round" d="M56 182 C150 170 290 138 372 100 L376 111 C296 146 152 180 58 186 Z"/>
+
+    <!-- satellite -->
+    <g transform="rotate(-12 420 70)">
+      <rect fill="#D9272E" x="350" y="66" width="46" height="28" rx="2"/>
+      <g stroke="#FFFFFF" stroke-width="2" stroke-linecap="round">
+        <line x1="361.5" y1="69" x2="361.5" y2="91"/>
+        <line x1="373" y1="69" x2="373" y2="91"/>
+        <line x1="384.5" y1="69" x2="384.5" y2="91"/>
+        <line x1="353" y1="80" x2="393" y2="80"/>
+      </g>
+      <rect fill="#D9272E" x="396" y="77" width="10" height="6"/>
+      <rect fill="#D9272E" x="406" y="62" width="28" height="36" rx="5"/>
+      <rect fill="#D9272E" x="434" y="77" width="10" height="6"/>
+      <rect fill="#D9272E" x="444" y="66" width="46" height="28" rx="2"/>
+      <g stroke="#FFFFFF" stroke-width="2" stroke-linecap="round">
+        <line x1="455.5" y1="69" x2="455.5" y2="91"/>
+        <line x1="467" y1="69" x2="467" y2="91"/>
+        <line x1="478.5" y1="69" x2="478.5" y2="91"/>
+        <line x1="447" y1="80" x2="487" y2="80"/>
+      </g>
+      <g stroke="#D9272E" stroke-width="3" stroke-linecap="round">
+        <line x1="414" y1="54" x2="416" y2="62"/>
+        <line x1="426" y1="54" x2="424" y2="62"/>
+      </g>
+      <ellipse fill="#D9272E" cx="420" cy="47" rx="15" ry="7"/>
+    </g>
+
+  </g>
+
+  <!-- Name block. Inter Bold; free from Google Fonts.
+       Convert to outlines before distributing the file. -->
+  <g fill="#1A1A1A">
+    <text x="372" y="66" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="550" font-size="20">Positioning, Navigation</text>
+    <text x="372" y="91" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="550" font-size="20">and Timing Laboratory</text>
+    <text x="372" y="118" font-family="'PingFang TC', 'Microsoft JhengHei', 'Noto Sans TC', sans-serif" font-weight="500" font-size="15" letter-spacing="2">定位導航與授時實驗室</text>
+  </g>
+</svg>
