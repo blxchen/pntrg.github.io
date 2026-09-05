@@ -4,10 +4,13 @@ import { useEffect } from 'react';
 
 export default function Motion() {
   useEffect(() => {
-    const elements = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'));
+    const elements = new WeakSet<HTMLElement>();
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      elements.forEach((element) => element.classList.add('is-revealed'));
-      return;
+      const revealNow = (root: ParentNode) => root.querySelectorAll<HTMLElement>('[data-reveal]').forEach((element) => element.classList.add('is-revealed'));
+      revealNow(document);
+      const mutationObserver = new MutationObserver(() => revealNow(document));
+      mutationObserver.observe(document.body, { childList: true, subtree: true });
+      return () => mutationObserver.disconnect();
     }
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -20,8 +23,20 @@ export default function Motion() {
         observer.unobserve(element);
       });
     }, { threshold: 0.12, rootMargin: '0px 0px -45px 0px' });
-    elements.forEach((element) => observer.observe(element));
-    return () => observer.disconnect();
+    const observe = (root: ParentNode) => {
+      root.querySelectorAll<HTMLElement>('[data-reveal]').forEach((element) => {
+        if (elements.has(element)) return;
+        elements.add(element);
+        observer.observe(element);
+      });
+    };
+    observe(document);
+    const mutationObserver = new MutationObserver(() => observe(document));
+    mutationObserver.observe(document.body, { childList: true, subtree: true });
+    return () => {
+      observer.disconnect();
+      mutationObserver.disconnect();
+    };
   }, []);
 
   return null;
